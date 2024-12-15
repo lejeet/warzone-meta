@@ -1,6 +1,6 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { FlatCompat } from '@eslint/eslintrc';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -10,22 +10,23 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
     rules: {
-      // Disabling specific rules
-      "react/no-unescaped-entities": "off",
-      "@next/next/no-img-element": "off",
+      // Change specific rules to 'warn' instead of 'off' to not fail builds but still report
+      "react/no-unescaped-entities": "warn",
+      "@next/next/no-img-element": "warn",
       "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
-      "@typescript-eslint/no-explicit-any": "off",
-      // Potentially add other specific TypeScript rules you wish to disable
+      "@typescript-eslint/no-explicit-any": "warn",
     }
   },
   {
     files: ["*.ts", "*.tsx"],
     rules: {
-      // Disable all TypeScript rules by prefixing with the plugin name
-      "@typescript-eslint/*": "off"
+      // If you prefer to not disable all TypeScript rules globally, consider specifying 'warn' for key rules
+      // "@typescript-eslint/*": "off"  // This line can be commented out if not disabling all rules
+      "@typescript-eslint/explicit-module-boundary-types": "warn",
+      "@typescript-eslint/no-var-requires": "warn",
     }
   }
 ];
