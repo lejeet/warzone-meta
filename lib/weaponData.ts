@@ -36,7 +36,21 @@ export interface Loadout {
   perks: string[];
 }
 
-export function getRankedWeapons() {
+interface WeaponTier {
+  META?: Weapon[];
+  A?: Weapon[];
+  B?: Weapon[];
+  C?: Weapon[];
+  D?: Weapon[];
+}
+
+interface RankedWeapons {
+  rankedResurgence: WeaponTier;
+  alMazrah: WeaponTier;
+  ashikaIsland: WeaponTier;
+}
+
+export function getRankedWeapons(): RankedWeapons {
     const { weapons, wzStatsTierList } = weaponMetaData;
     const { rankedResurgence, alMazrah, ashikaIsland } = wzStatsTierList;
 

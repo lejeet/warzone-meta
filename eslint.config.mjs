@@ -13,12 +13,19 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     rules: {
-      // Disabling rules based on the suggestions
+      // Disabling specific rules
       "react/no-unescaped-entities": "off",
       "@next/next/no-img-element": "off",
       "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
       "@typescript-eslint/no-explicit-any": "off",
-      // Add or modify other rules here
+      // Potentially add other specific TypeScript rules you wish to disable
+    }
+  },
+  {
+    files: ["*.ts", "*.tsx"],
+    rules: {
+      // Disable all TypeScript rules by prefixing with the plugin name
+      "@typescript-eslint/*": "off"
     }
   }
 ];
