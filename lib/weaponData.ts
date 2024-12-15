@@ -25,6 +25,7 @@ export interface Weapon {
   position: number;
   categoryRank: number;
   typeRank: number;
+  meta?: string;
 }
 
 export interface Loadout {
