@@ -21,22 +21,16 @@ export default function LeaderboardPage() {
   const { rankedResurgence, alMazrah: battleRoyale, ashikaIsland: resurgence } = weaponsData;
 
   const selectedWeapons = useMemo(() => {
-    let weaponsCategory;
     switch (selectedCategory) {
       case 'BATTLE ROYALE':
-        weaponsCategory = battleRoyale.META;
-        break;
+        return battleRoyale?.META || [];
       case 'RESURGENCE':
-        weaponsCategory = resurgence.META;
-        break;
+        return resurgence?.META || [];
       case 'RANKED':
-        weaponsCategory = rankedResurgence.META;
-        break;
+        return rankedResurgence?.META || [];
       default:
-        weaponsCategory = {};
+        return [];
     }
-    // Ensure that we always have a META property available
-    return weaponsCategory || [];
   }, [selectedCategory, battleRoyale, resurgence, rankedResurgence]);
 
   return (

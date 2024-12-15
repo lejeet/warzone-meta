@@ -25,7 +25,9 @@ export interface Weapon {
   position: number;
   categoryRank: number;
   typeRank: number;
-  meta?: string;
+  typeRankFormatted: string; // Ensure this is included
+  isNew: boolean;  // Include this based on your requirements
+  updateWZ2: string;  // Include this based on your requirements
 }
 
 export interface Loadout {
