@@ -19,15 +19,15 @@ export interface Weapon {
   type: string;
   game: string;
   displayType: string;
+  isNew: boolean;
+  updateWZ2: string;
   rankings: WeaponRanking[];
   bestAttachments: Attachment[];
   tier: string;
   position: number;
   categoryRank: number;
   typeRank: number;
-  typeRankFormatted: string; // Ensure this is included
-  isNew: boolean;  // Include this based on your requirements
-  updateWZ2: string;  // Include this based on your requirements
+  typeRankFormatted: string;
 }
 
 export interface Loadout {
@@ -53,68 +53,52 @@ interface RankedWeapons {
   ashikaIsland: WeaponTier;
 }
 
-export function getRankedWeapons(): RankedWeapons {
-    const { weapons, wzStatsTierList } = weaponMetaData;
-    const { rankedResurgence, alMazrah, ashikaIsland } = wzStatsTierList;
+function mapTierToWeapons(tierList: Record<string, string[]>): Record<string, Weapon[]> {
+  const output: any = {};
+  Object.entries(tierList).forEach(([tier, ids]) => {
+    output[tier] = ids.map(id => {
+      const weapon = weaponMetaData.weapons.find(w => w.id === id);
+      if (!weapon) return null;
 
-    // Helper function to map tier names to weapons
-    const mapTierToWeapons = (tierList) => {
-        const output = {};
-        for (const tier in tierList) {
-            output[tier] = tierList[tier].map(id => {
-                const weapon = weapons.find(w => w.id === id);
-                if (!weapon) return null;
+      const builds = weaponBuildsData.builds.filter(build => build.weaponId === weapon.id);
+      builds.sort((a, b) => Math.abs(a.position - 1) - Math.abs(b.position - 1));
+      const bestBuild = builds[0];
 
-                // Find all builds for this weapon
-                const builds = weaponBuildsData.builds.filter(build => build.weaponId === weapon.id);
-                // Sort builds by position, aiming to get the closest to 1
-                builds.sort((a, b) => Math.abs(a.position - 1) - Math.abs(b.position - 1));
-                // Select the best build (closest to position 1)
-                const bestBuild = builds[0];
+      const bestAttachments = bestBuild ? Object.entries(bestBuild)
+        .filter(([key, value]) => value && typeof value === 'object' && 'name' in value)
+        .map(([key, value]) => ({ slot: key as string, name: value.name })) : [];
 
-                // Map attachments from the best build
-                const bestAttachments: Attachment[] = bestBuild ? Object.entries(bestBuild)
-                    .filter(([key, value]) => value && typeof value === 'object' && 'name' in value)
-                    .map(([key, value]) => ({ slot: key, name: value.name })) : [];
+      const loadoutData = weaponLoadoutsData.weapons.find(l => l.weaponId === weapon.id);
+      const categoryRank = loadoutData?.categoryRank || 0;
 
-                // Find corresponding loadout data to get ranks
-                const loadoutData = weaponLoadoutsData?.weapons.find(l => l.weaponId === weapon.id);
-                const categoryRank = loadoutData?.categoryRank || 0;
-
-                // Format type rank description
-                const typeRankFormatted = `#${categoryRank} ` + ({
-                    'ASSAULT_RIFLE': 'Long range',
-                    'SMG': 'Close range',
-                    'LMG': 'Long range',
-                    'SNIPER': 'Sniper'
-                }[weapon.type] || '');
-
-                return {
-                    ...weapon,
-                    bestAttachments,
-                    typeRankFormatted,
-                    categoryRank
-                };
-            }).filter(weapon => weapon); // Filter out null entries
-        }
-        return output;
-    };
-
-    return {
-        rankedResurgence: mapTierToWeapons(rankedResurgence),
-        alMazrah: mapTierToWeapons(alMazrah),
-        ashikaIsland: mapTierToWeapons(ashikaIsland)
-    };
+      return {
+        ...weapon,
+        bestAttachments,
+        typeRankFormatted: `#${categoryRank} ` + ({
+          'ASSAULT_RIFLE': 'Long range',
+          'SMG': 'Close range',
+          'LMG': 'Long range',
+          'SNIPER': 'Sniper'
+        }[weapon.type] || ''),
+        categoryRank
+      };
+    }).filter(weapon => weapon);
+  });
+  return output;
 }
 
-// Example usage:
-const allRankedWeapons = getRankedWeapons();
-console.log(allRankedWeapons);
+export function getRankedWeapons(): RankedWeapons {
+  const { rankedResurgence, alMazrah, ashikaIsland } = weaponMetaData.wzStatsTierList;
+  return {
+    rankedResurgence: mapTierToWeapons(rankedResurgence),
+    alMazrah: mapTierToWeapons(alMazrah),
+    ashikaIsland: mapTierToWeapons(ashikaIsland)
+  };
+}
 
-// Utilize the ranked weapons data for top weapons function
 export function getTopWeapons() {
   const rankedWeapons = getRankedWeapons();
-  return rankedWeapons.META; // Assuming you want the top META weapons
+  return rankedWeapons; // Assuming you want the top META weapons
 }
 
 // Function to get and format a specific loadout
