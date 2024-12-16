@@ -5,11 +5,11 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Warzone Meta | Gaming Leaderboard and Statistics',
+  title: 'Warzone Meta | Top Loadouts and Statistics',
   description: 'Stay ahead in Warzone with our up-to-date meta analysis, weapon stats, and pro strategies. Dominate the battlefield with insider tips and tricks.',
   keywords: 'Warzone, meta, gaming leaderboard, weapon stats, Call of Duty, battle royale',
   openGraph: {
-    title: 'Warzone Meta | Gaming Leaderboard and Statistics',
+    title: 'Warzone Meta | Top Loadouts and Statistics',
     description: 'Stay ahead in Warzone with our up-to-date meta analysis, weapon stats, and pro strategies.',
     type: 'website',
     url: 'https://wzmeta.io',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Warzone Meta | Gaming Leaderboard and Statistics',
+    title: 'Warzone Meta | Top Loadouts and Statistics',
     description: 'Stay ahead in Warzone with our up-to-date meta analysis, weapon stats, and pro strategies.',
     images: ['/twitter-image.jpg'],
   },
@@ -37,6 +37,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <link rel="canonical" href="https://wzmeta.io" />
+      </head>
       <body className={`${inter.className} bg-background text-foreground`}>{children}</body>
     </html>
   )

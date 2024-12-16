@@ -10,7 +10,7 @@ import { getRankedWeapons } from '@/lib/weaponData';
 import Head from 'next/head';
 
 export default function LeaderboardPage() {
-  const [selectedCategory, setSelectedCategory] = useState('RANKED');
+  const [selectedCategory, setSelectedCategory] = useState('BATTLE ROYALE');
   const categories = [
     { name: 'BATTLE ROYALE' },
     { name: 'RESURGENCE' },
