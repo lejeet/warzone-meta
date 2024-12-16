@@ -8,9 +8,11 @@ import { NewsSection } from '@/components/news-section';
 import { motion } from 'framer-motion';
 import { getRankedWeapons } from '@/lib/weaponData';
 import Head from 'next/head';
+import { FAQSection } from '@/components/faq-section';
+import { WeaponTiers } from '@/components/weapon-tiers';
 
 export default function LeaderboardPage() {
-  const [selectedCategory, setSelectedCategory] = useState('BATTLE ROYALE');
+  const [selectedCategory, setSelectedCategory] = useState('RANKED');
   const categories = [
     { name: 'BATTLE ROYALE' },
     { name: 'RESURGENCE' },
@@ -20,6 +22,8 @@ export default function LeaderboardPage() {
 
   const weaponsData = useMemo(() => getRankedWeapons(), []);
   const { rankedResurgence, alMazrah: battleRoyale, ashikaIsland: resurgence } = weaponsData;
+
+  console.log(weaponsData, 'WEAPONS DATA');
 
   const selectedWeapons = useMemo(() => {
     switch (selectedCategory) {
@@ -68,8 +72,12 @@ export default function LeaderboardPage() {
           {selectedCategory === 'NEWS' ? (
             <NewsSection />
           ) : (
-            <WeaponCards weapons={selectedWeapons} />
+            <>
+              <WeaponCards weapons={selectedWeapons} />
+              <WeaponTiers />
+            </>
           )}
+          <FAQSection />
         </motion.div>
       </div>
     </>
