@@ -63,7 +63,7 @@ export async function generateMetadata({ params }: { params: Params }) {
     description: `Best ${weapon.name} loadout and attachments for Warzone. View detailed stats, attachments, and strategies.`
   }
 }
-// @ts-ignore
+//@ts-expect-error
 export default function WeaponPage({ params }: { params: Params }) {
   const weapon = getWeaponData(params.id)
   
