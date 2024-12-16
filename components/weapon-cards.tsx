@@ -33,11 +33,50 @@ interface Weapon {
   game: string;
 }
 
-interface WeaponCardsProps {
-  weapons: Weapon[];
+interface WeaponTier {
+  META: Weapon[];
+  A: Weapon[];
+  B: Weapon[];
+  C: Weapon[];
+  D: Weapon[];
 }
-export function WeaponCards({ weapons }: WeaponCardsProps) {
-  console.log(weapons, 'weapons');
+
+const TierHeader: React.FC<{ tier: string }> = ({ tier }) => {
+  const getGradient = (tier: string) => {
+    switch (tier) {
+      case 'META':
+        return 'from-yellow-500 to-amber-500 text-black';
+      case 'A':
+        return 'from-blue-500 to-blue-600 text-white';
+      case 'B':
+        return 'from-green-500 to-green-600 text-white';
+      case 'C':
+        return 'from-orange-500 to-orange-600 text-white';
+      default:
+        return 'from-red-500 to-red-600 text-white';
+    }
+  };
+
+  return (
+    <div className={`mb-6 rounded-lg overflow-hidden shadow-lg`}>
+      <div className={`bg-gradient-to-r ${getGradient(tier)} p-4`}>
+        <h2 className="text-3xl font-extrabold tracking-tight">
+          {tier === "META" && 'CURRENT'} {tier} {tier !== "META" && <span className="font-normal">TIER</span>}
+        </h2>
+      </div>
+      <div className="bg-[#1A1A1A] p-3 text-sm text-gray-300">
+        {tier === 'META' ? 'Top-tier weapons dominating the current meta' :
+         tier === 'A' ? 'Excellent weapons, just shy of meta status' :
+         tier === 'B' ? 'Strong, reliable choices for most situations' :
+         tier === 'C' ? 'Decent weapons that can be effective in the right hands' :
+         'Challenging weapons that may require significant skill to use effectively'}
+      </div>
+    </div>
+  );
+};
+
+export function WeaponCards({ weapons }: any) {
+  const tiers: (keyof WeaponTier)[] = ['META', 'A', 'B', 'C', 'D'];
 
   const getRankBadgeColor = (rank: string) => {
     if (rank.includes('#1')) return 'bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-400 text-yellow-900 shadow-md relative overflow-hidden after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/20 after:to-transparent after:animate-shine';
@@ -54,7 +93,10 @@ export function WeaponCards({ weapons }: WeaponCardsProps) {
         exit={{ opacity: 0 }}
         className="space-y-4"
       >
-        {weapons.map((weapon, index) => (
+        {tiers.map(tier => (
+          weapons[tier] ? weapons[tier]!.map((weapon: any, index: any) => (
+          <div key={index}>
+          {index === 0 && <TierHeader tier={tier} />}
           <motion.div
             key={weapon.id}
             initial={{ opacity: 0, y: 20 }}
@@ -87,12 +129,25 @@ export function WeaponCards({ weapons }: WeaponCardsProps) {
                           >
                             {weapon.displayType.replace('_', ' ')}
                           </Badge>
-                          <Badge 
-                            variant="secondary" 
-                            className={`${getRankBadgeColor(weapon.typeRankFormatted)} hover:opacity-90 transition-opacity duration-300`}
-                          >
-                            {weapon.typeRankFormatted.toUpperCase()}
-                          </Badge>
+                          {weapon.typeRankFormatted.includes('#0') && tier !== 'META' ? null : (
+                            // Existing condition to display #1 SNIPER RIFLE if conditions are matched
+                            (weapon.typeRankFormatted.includes('#0') && tier === 'META' && weapon.displayType.replace('_', ' ') === 'SNIPER RIFLE') ? (
+                              <Badge 
+                                variant="secondary" 
+                                className={`${getRankBadgeColor("#1 SNIPER RIFLE")} hover:opacity-90 transition-opacity duration-300`}
+                              >
+                                #1 SNIPER RIFLE
+                              </Badge>
+                            ) : (
+                              // Otherwise, display the badge with the current ranking formatted
+                              <Badge 
+                                variant="secondary" 
+                                className={`${getRankBadgeColor(weapon.typeRankFormatted)} hover:opacity-90 transition-opacity duration-300`}
+                              >
+                                {weapon.typeRankFormatted.toUpperCase()}
+                              </Badge>
+                            )
+                          )}
                           {weapon.isNew && (
                             <Badge variant="secondary" className="bg-green-700 text-white hover:bg-green-600 transition-colors duration-300">
                               NEW
@@ -120,7 +175,7 @@ export function WeaponCards({ weapons }: WeaponCardsProps) {
                       <div className="bg-[#1A1A1A] rounded-lg p-4 border border-[#1d2433]">
                         <h4 className="text-lg font-bold mb-4 uppercase border-b border-[#1d2433] pb-2">Best Attachments</h4>
                         <ul className="space-y-2 text-gray-300">
-                          {weapon.bestAttachments.map((attachment, index) => (
+                          {weapon.bestAttachments.map((attachment: any, index: any) => (
                             <motion.li 
                               key={index} 
                               className="flex items-center py-1 hover:bg-[#252525] rounded transition-colors duration-300 px-2"
@@ -147,7 +202,9 @@ export function WeaponCards({ weapons }: WeaponCardsProps) {
                                 transition={{ delay: index * 0.1 }}
                               >
                                 <span className="w-1/3 text-gray-400 text-sm">{key.toUpperCase()}:</span>
-                                <span className="w-2/3 font-medium">{Array.isArray(value) ? value.join(', ') : value}</span>
+                                <span className="w-2/3 font-medium">
+                                    {Array.isArray(value) ? value.join(', ') : value?.toString()}
+                                  </span>
                               </motion.li>
                             ))}
                           </ul>
@@ -159,6 +216,8 @@ export function WeaponCards({ weapons }: WeaponCardsProps) {
               </AccordionItem>
             </Accordion>
           </motion.div>
+          </div>
+        )) : null
         ))}
       </motion.div>
     </AnimatePresence>

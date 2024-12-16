@@ -14,7 +14,7 @@ export default function LeaderboardPage() {
     { name: 'BATTLE ROYALE' },
     { name: 'RESURGENCE' },
     { name: 'RANKED' },
-    { name: 'NEWS' },
+    // { name: 'NEWS' },
   ];
 
   const weaponsData = useMemo(() => getRankedWeapons(), []);
@@ -23,11 +23,11 @@ export default function LeaderboardPage() {
   const selectedWeapons = useMemo(() => {
     switch (selectedCategory) {
       case 'BATTLE ROYALE':
-        return battleRoyale?.META || [];
+        return battleRoyale || [];
       case 'RESURGENCE':
-        return resurgence?.META || [];
+        return resurgence || [];
       case 'RANKED':
-        return rankedResurgence?.META || [];
+        return rankedResurgence || [];
       default:
         return [];
     }

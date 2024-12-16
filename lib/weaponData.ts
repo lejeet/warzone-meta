@@ -80,7 +80,8 @@ function mapTierToWeapons(tierList: Record<string, string[]>): Record<string, We
           'LMG': 'Long range',
           'SNIPER': 'Sniper'
         }[weapon.type] || ''),
-        categoryRank
+        categoryRank,
+        loadout: getTopLoadouts()
       };
     }).filter(weapon => weapon);
   });
@@ -90,11 +91,12 @@ function mapTierToWeapons(tierList: Record<string, string[]>): Record<string, We
 export function getRankedWeapons(): RankedWeapons {
   const { rankedResurgence, alMazrah, ashikaIsland } = weaponMetaData.wzStatsTierList;
   return {
-    rankedResurgence: mapTierToWeapons(rankedResurgence),
-    alMazrah: mapTierToWeapons(alMazrah),
-    ashikaIsland: mapTierToWeapons(ashikaIsland)
+    rankedResurgence: mapTierToWeapons(rankedResurgence || {}),
+    alMazrah: mapTierToWeapons(alMazrah || {}),
+    ashikaIsland: mapTierToWeapons(ashikaIsland || {})
   };
 }
+
 
 export function getTopWeapons() {
   const rankedWeapons = getRankedWeapons();

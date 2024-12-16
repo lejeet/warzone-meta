@@ -12,11 +12,11 @@ export function CategoryToggles({ categories, selectedCategory, setSelectedCateg
       {categories.map((category) => (
         <motion.button
           key={category.name}
-          className={`relative px-4 py-2 text-lg font-semibold transition-all duration-200 whitespace-nowrap ${
+          className={`relative py-2 mr-4 text-lg font-semibold transition-all duration-200 whitespace-nowrap ${
             selectedCategory === category.name ? 'text-white' : 'text-gray-400 hover:text-gray-300'
           } text-base sm:text-lg`}
           onClick={() => setSelectedCategory(category.name)}
-          whileHover={{ scale: 1.05 }}
+          // whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
           {category.name}
@@ -25,7 +25,7 @@ export function CategoryToggles({ categories, selectedCategory, setSelectedCateg
               className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#3B82F6]"
               layoutId="underline"
               initial={false}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              transition={{ type: "spring", stiffness: 1000, damping: 30 }}
             />
           )}
         </motion.button>
