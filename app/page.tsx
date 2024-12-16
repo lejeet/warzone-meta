@@ -39,7 +39,7 @@ export default function LeaderboardPage() {
     "@type": "WebSite",
     "name": "Warzone Meta",
     "description": "Stay ahead in Warzone with our up-to-date meta analysis, weapon stats, and pro strategies.",
-    "url": "https://warzonemeta.com"
+    "url": "https://wzmeta.io"
   };
 
   return (
