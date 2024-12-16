@@ -63,7 +63,7 @@ export async function generateMetadata({ params }: { params: Params }) {
     description: `Best ${weapon.name} loadout and attachments for Warzone. View detailed stats, attachments, and strategies.`
   }
 }
-//@ts-expect-error
+//@ts-expect-error FIXME: Parameter 'params' implicitly has an 'any' type.
 export default function WeaponPage({ params }: { params: Params }) {
   const weapon = getWeaponData(params.id)
   
