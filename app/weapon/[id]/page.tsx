@@ -3,11 +3,8 @@ import { getRankedWeapons } from '@/lib/weaponData';
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
-interface WeaponPageProps {
-  params: {
-    id: string
-  }
-  searchParams: { [key: string]: string | string[] | undefined }
+type Params = {
+  id: string
 }
 
 // Define type for a single weapon
@@ -51,7 +48,7 @@ function getWeaponData(id: string): Weapon | undefined {
   return undefined;
 }
 
-export async function generateMetadata({ params }: WeaponPageProps) {
+export async function generateMetadata({ params }: { params: Params }) {
   const weapon = getWeaponData(params.id)
   
   if (!weapon) {
@@ -67,7 +64,7 @@ export async function generateMetadata({ params }: WeaponPageProps) {
   }
 }
 
-export default function WeaponPage({ params }: WeaponPageProps) {
+export default function WeaponPage({ params }: { params: Params }) {
   const weapon = getWeaponData(params.id)
   
   if (!weapon) {
