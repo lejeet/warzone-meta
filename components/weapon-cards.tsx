@@ -61,7 +61,7 @@ const TierHeader: React.FC<{ tier: string }> = ({ tier }) => {
     <div className={`mb-6 rounded-lg overflow-hidden shadow-lg`}>
       <div className={`bg-gradient-to-r ${getGradient(tier)} p-4`}>
         <h2 className="text-3xl font-extrabold tracking-tight">
-          {tier === "META" && 'CURRENT'} {tier} {tier !== "META" && <span className="font-normal">TIER</span>}
+          {tier} <span className="font-normal">TIER</span>
         </h2>
       </div>
       <div className="bg-[#1A1A1A] p-3 text-sm text-gray-300">
