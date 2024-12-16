@@ -33,7 +33,7 @@ interface Weapon {
 }
 
 
-function getWeaponData(id: string): Weapon | undefined {
+async function getWeaponData(id: string): Promise<Weapon | undefined> {
   const weaponData: any = getRankedWeapons();
   for (const map in weaponData) {
     for (const tier in weaponData[map]) {
@@ -47,9 +47,10 @@ function getWeaponData(id: string): Weapon | undefined {
   }
   return undefined;
 }
-//@ts-expect-error FIXME: Parameter 'params' implicitly has an 'any' type.
-export async function generateMetadata({ params }: { params: Params }) {
-  const weapon = getWeaponData(params.id)
+
+export async function generateMetadata({ params }: { params: Promise<Params> }) {
+  const resolvedParams = await params;
+  const weapon = await getWeaponData(resolvedParams.id)
   
   if (!weapon) {
     return {
@@ -63,9 +64,10 @@ export async function generateMetadata({ params }: { params: Params }) {
     description: `Best ${weapon.name} loadout and attachments for Warzone. View detailed stats, attachments, and strategies.`
   }
 }
-//@ts-expect-error FIXME: Parameter 'params' implicitly has an 'any' type.
-export default function WeaponPage({ params }: { params: Params }) {
-  const weapon = getWeaponData(params.id)
+
+export default async function WeaponPage({ params }: { params: Promise<Params> }) {
+  const resolvedParams = await params;
+  const weapon = await getWeaponData(resolvedParams.id)
   
   if (!weapon) {
     notFound()
@@ -123,7 +125,7 @@ export default function WeaponPage({ params }: { params: Params }) {
                   </div>
                 )}
               </div>
-              {weapon.isNew || weapon.updateMW2 && (
+              {(weapon.isNew || weapon.updateMW2) && (
                 <div className="space-y-6">
                     <div>
                     <h2 className="text-xl font-semibold text-white mb-4">Weapon Status</h2>
@@ -162,4 +164,3 @@ export default function WeaponPage({ params }: { params: Params }) {
     </main>
   )
 }
-
