@@ -10,6 +10,7 @@ import { getRankedWeapons } from '@/lib/weaponData';
 import Head from 'next/head';
 import { FAQSection } from '@/components/faq-section';
 import { WeaponTiers } from '@/components/weapon-tiers';
+import { Footer } from '@/components/footer';
 
 export default function LeaderboardPage() {
   const [selectedCategory, setSelectedCategory] = useState('RANKED');
@@ -78,6 +79,7 @@ export default function LeaderboardPage() {
             </>
           )}
           <FAQSection />
+          <Footer />
         </motion.div>
       </div>
     </>
