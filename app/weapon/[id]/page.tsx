@@ -47,7 +47,7 @@ function getWeaponData(id: string): Weapon | undefined {
   }
   return undefined;
 }
-
+//@ts-expect-error FIXME: Parameter 'params' implicitly has an 'any' type.
 export async function generateMetadata({ params }: { params: Params }) {
   const weapon = getWeaponData(params.id)
   
