@@ -7,6 +7,7 @@ import { WeaponCards } from '@/components/weapon-cards';
 import { NewsSection } from '@/components/news-section';
 import { motion } from 'framer-motion';
 import { getRankedWeapons } from '@/lib/weaponData';
+import Head from 'next/head';
 
 export default function LeaderboardPage() {
   const [selectedCategory, setSelectedCategory] = useState('RANKED');
@@ -33,27 +34,44 @@ export default function LeaderboardPage() {
     }
   }, [selectedCategory, battleRoyale, resurgence, rankedResurgence]);
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Warzone Meta",
+    "description": "Stay ahead in Warzone with our up-to-date meta analysis, weapon stats, and pro strategies.",
+    "url": "https://warzonemeta.com"
+  };
+
   return (
-    <div className="min-h-screen bg-[#121212] text-white relative overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5 pointer-events-none"></div>
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
-      >
-        <Header />
-        <CategoryToggles 
-          categories={categories}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-        />
-        {selectedCategory === 'NEWS' ? (
-          <NewsSection />
-        ) : (
-          <WeaponCards weapons={selectedWeapons} />
-        )}
-      </motion.div>
-    </div>
+    <>
+      <Head>
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      </Head>
+      <div className="min-h-screen bg-[#121212] text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5 pointer-events-none"></div>
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
+        >
+          <Header />
+          <nav>
+            <CategoryToggles 
+              categories={categories}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+            />
+          </nav>
+          {selectedCategory === 'NEWS' ? (
+            <NewsSection />
+          ) : (
+            <WeaponCards weapons={selectedWeapons} />
+          )}
+        </motion.div>
+      </div>
+    </>
   );
 }
