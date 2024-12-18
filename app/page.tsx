@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { Header } from '@/components/header';
 import { CategoryToggles } from '@/components/category-toggles';
-import { WeaponCards } from '@/components/weapon-cards';
+import { WeaponGrid } from '@/components/weapon-grid'
 import { NewsSection } from '@/components/news-section';
 import { motion } from 'framer-motion';
 import { getRankedWeapons } from '@/lib/weaponData';
@@ -23,8 +23,6 @@ export default function LeaderboardPage() {
 
   const weaponsData = useMemo(() => getRankedWeapons(), []);
   const { rankedResurgence, alMazrah: battleRoyale, ashikaIsland: resurgence } = weaponsData;
-
-  console.log(weaponsData, 'WEAPONS DATA');
 
   const selectedWeapons = useMemo(() => {
     switch (selectedCategory) {
@@ -74,7 +72,7 @@ export default function LeaderboardPage() {
             <NewsSection />
           ) : (
             <>
-              <WeaponCards weapons={selectedWeapons} />
+              <WeaponGrid weapons={selectedWeapons} selectedCategory={selectedCategory} />
               <WeaponTiers />
             </>
           )}
