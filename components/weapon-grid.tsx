@@ -189,7 +189,7 @@ export function WeaponGrid({ weapons, selectedCategory: modeCategory }: WeaponGr
 
                     {/* Best Attachments */}
                     {weapon.bestAttachments.length > 0 && (
-                    <div className="mt-auto">
+                    <div className="mt-4">
                         <h4 className="text-sm font-semibold text-gray-400 mb-3 flex items-center">
                         <Crosshair className="w-4 h-4 mr-2" />
                         BEST ATTACHMENTS
@@ -207,6 +207,8 @@ export function WeaponGrid({ weapons, selectedCategory: modeCategory }: WeaponGr
                         </div>
                     </div>
                     )}
+                      {/* Flexible space at the bottom */}
+                      <div className="flex-grow"></div>
                     </div>
 
                     {/* Decorative elements */}
