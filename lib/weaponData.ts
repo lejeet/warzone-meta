@@ -50,22 +50,16 @@ interface RankedWeapons {
 }
 
 async function fetchAllWeaponData() {
-  const urls = [
-    "https://app.wzstats.gg/wz2/weapons/meta/weapons-and-tier-lists/?streamerProfileId=wzstats&weaponGames[]=mw3&weaponGames[]=mw2&weaponGames[]=bo6&addConversionKit=true&weaponAttributes[]=game&weaponAttributes[]=name&weaponAttributes[]=type&weaponAttributes[]=isNew&weaponAttributes[]=updateMW2&weaponAttributes[]=updateWZ2&weaponAttributes[]=displayType&weaponAttributes[]=sniperSupportRank",
-    "https://app.wzstats.gg/wz2/weapons/builds/wzstats/with-attachments/?game=wz2&language=en&addConversionKit=true",
-    "https://app.wzstats.gg/wz2/weapons/loadouts/full?addConversionKit=true&games[]=warzone&language=en&map=rankedResurgence"
-  ];
-
   try {
-    const responses = await Promise.all(urls.map(url => fetch(url)));
-    if (!responses.every(response => response.ok)) {
-      throw new Error('One or more HTTP requests failed');
+    const response = await fetch('/api/weapons');
+    if (!response.ok) {
+      throw new Error('Failed to fetch weapon data');
     }
-    const [weaponMetaData, weaponBuildsData, weaponLoadoutsData] = await Promise.all(responses.map(response => response.json()));
-    return { weaponMetaData, weaponBuildsData, weaponLoadoutsData };
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error("Error fetching weapon data:", error);
-    throw error; // Rethrow or handle as needed
+    throw error;
   }
 }
 
