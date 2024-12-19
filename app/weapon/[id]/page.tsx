@@ -32,7 +32,6 @@ interface Weapon {
   };
 }
 
-
 async function getWeaponData(id: string): Promise<Weapon | undefined> {
   const weaponData: any = getRankedWeapons();
   for (const map in weaponData) {

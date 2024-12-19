@@ -37,7 +37,7 @@ export function Header() {
             </Button>
           </div> */}
           {/* Last Updated Section */}
-          <div className="gradient-banner py-3">
+          <div className="gradient-banner self-start">
             <p className="text-gray-400 text-sm">
               Last Updated: <span className="text-white font-semibold">{today}</span>
             </p>

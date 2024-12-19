@@ -1,7 +1,3 @@
-import weaponLoadoutsData from '../data/weapon-loadouts.json';
-import weaponMetaData from '../data/weapon-meta.json';
-import weaponBuildsData from '../data/weapon-builds.json';
-
 // Interfaces
 export interface Attachment {
   slot: string;
@@ -53,22 +49,47 @@ interface RankedWeapons {
   ashikaIsland: WeaponTier;
 }
 
-function mapTierToWeapons(tierList: Record<string, string[]>): Record<string, Weapon[]> {
+async function fetchAllWeaponData() {
+  const urls = [
+    "https://app.wzstats.gg/wz2/weapons/meta/weapons-and-tier-lists/?streamerProfileId=wzstats&weaponGames[]=mw3&weaponGames[]=mw2&weaponGames[]=bo6&addConversionKit=true&weaponAttributes[]=game&weaponAttributes[]=name&weaponAttributes[]=type&weaponAttributes[]=isNew&weaponAttributes[]=updateMW2&weaponAttributes[]=updateWZ2&weaponAttributes[]=displayType&weaponAttributes[]=sniperSupportRank",
+    "https://app.wzstats.gg/wz2/weapons/builds/wzstats/with-attachments/?game=wz2&language=en&addConversionKit=true",
+    "https://app.wzstats.gg/wz2/weapons/loadouts/full?addConversionKit=true&games[]=warzone&language=en&map=rankedResurgence"
+  ];
+
+  try {
+    const responses = await Promise.all(urls.map(url => fetch(url)));
+    if (!responses.every(response => response.ok)) {
+      throw new Error('One or more HTTP requests failed');
+    }
+    const [weaponMetaData, weaponBuildsData, weaponLoadoutsData] = await Promise.all(responses.map(response => response.json()));
+    return { weaponMetaData, weaponBuildsData, weaponLoadoutsData };
+  } catch (error) {
+    console.error("Error fetching weapon data:", error);
+    throw error; // Rethrow or handle as needed
+  }
+}
+
+function mapTierToWeapons(
+  tierList: Record<string, string[]>, 
+  weaponMetaData: { weapons: any[], wzStatsTierList: any },
+  weaponBuildsData: { builds: any[] },
+  weaponLoadoutsData: { weapons: any[] }
+): Record<string, Weapon[]> {
   const output: any = {};
   Object.entries(tierList).forEach(([tier, ids]) => {
     output[tier] = ids.map(id => {
-      const weapon = weaponMetaData.weapons.find(w => w.id === id);
+      const weapon = weaponMetaData.weapons.find((w: any) => w.id === id);
       if (!weapon) return null;
 
-      const builds = weaponBuildsData.builds.filter(build => build.weaponId === weapon.id);
-      builds.sort((a, b) => Math.abs(a.position - 1) - Math.abs(b.position - 1));
+      const builds = weaponBuildsData.builds.filter((build: any) => build.weaponId === weapon.id);
+      builds.sort((a: any, b: any) => Math.abs(a.position - 1) - Math.abs(b.position - 1));
       const bestBuild = builds[0];
 
       const bestAttachments = bestBuild ? Object.entries(bestBuild)
-        .filter(([key, value]) => value && typeof value === 'object' && 'name' in value)
-        .map(([key, value]) => ({ slot: key as string, name: value.name })) : [];
+        .filter(([key, value]: [string, any]) => value && typeof value === 'object' && 'name' in value)
+        .map(([key, value]: [string, any]) => ({ slot: key as string, name: value.name })) : [];
 
-      const loadoutData = weaponLoadoutsData.weapons.find(l => l.weaponId === weapon.id);
+      const loadoutData = weaponLoadoutsData.weapons.find((l: any) => l.weaponId === weapon.id);
       const categoryRank = loadoutData?.categoryRank || 0;
 
       return {
@@ -81,22 +102,21 @@ function mapTierToWeapons(tierList: Record<string, string[]>): Record<string, We
           'SNIPER': 'Sniper'
         }[weapon.type] || ''),
         categoryRank,
-        loadout: getTopLoadouts()
+        loadout: getTopLoadouts(weaponLoadoutsData) // Make sure this function also receives necessary data
       };
-    }).filter(weapon => weapon);
+    }).filter((weapon: any) => weapon);
   });
   return output;
 }
 
-export function getRankedWeapons(): RankedWeapons {
-  const { rankedResurgence, alMazrah, ashikaIsland } = weaponMetaData.wzStatsTierList;
+export async function getRankedWeapons(): Promise<RankedWeapons> {
+  const { weaponMetaData, weaponBuildsData, weaponLoadoutsData } = await fetchAllWeaponData();
   return {
-    rankedResurgence: mapTierToWeapons(rankedResurgence || {}),
-    alMazrah: mapTierToWeapons(alMazrah || {}),
-    ashikaIsland: mapTierToWeapons(ashikaIsland || {})
+    rankedResurgence: mapTierToWeapons(weaponMetaData?.wzStatsTierList.rankedResurgence || {}, weaponMetaData, weaponBuildsData, weaponLoadoutsData),
+    alMazrah: mapTierToWeapons(weaponMetaData?.wzStatsTierList.alMazrah || {}, weaponMetaData, weaponBuildsData, weaponLoadoutsData),
+    ashikaIsland: mapTierToWeapons(weaponMetaData?.wzStatsTierList.ashikaIsland || {}, weaponMetaData, weaponBuildsData, weaponLoadoutsData)
   };
 }
-
 
 export function getTopWeapons() {
   const rankedWeapons = getRankedWeapons();
@@ -104,7 +124,7 @@ export function getTopWeapons() {
 }
 
 // Function to get and format a specific loadout
-export function getTopLoadouts() {
+export function getTopLoadouts(weaponLoadoutsData) {
   const loadout = weaponLoadoutsData?.loadouts.find(loadout => loadout.id === "resurgence_ranked-1-warzone");
 
   if (!loadout) return null;

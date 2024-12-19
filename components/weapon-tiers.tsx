@@ -62,7 +62,7 @@ export function WeaponTiers() {
   ]
 
   return (
-    <div className="w-full text-center mt-8 mb-8 p-6 bg-[#0F0F10] rounded-lg">
+    <div className="w-full text-center mt-24 mb-8 p-6 bg-[#0F0F10] rounded-lg">
       <div className="mb-8">
         <h3 className="text-gray-400 text-2xl font-medium mb-4">
           META Guns

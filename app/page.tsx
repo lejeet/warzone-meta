@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Header } from '@/components/header';
 import { CategoryToggles } from '@/components/category-toggles';
 import { WeaponGrid } from '@/components/weapon-grid'
@@ -21,21 +21,43 @@ export default function LeaderboardPage() {
     // { name: 'NEWS' },
   ];
 
-  const weaponsData = useMemo(() => getRankedWeapons(), []);
-  const { rankedResurgence, alMazrah: battleRoyale, ashikaIsland: resurgence } = weaponsData;
+  const [weaponsData, setWeaponsData] = useState({
+    rankedResurgence: null,
+    alMazrah: null,
+    ashikaIsland: null
+  });
 
+  useEffect(() => {
+    async function loadWeapons() {
+      try {
+        const data = await getRankedWeapons();
+        console.log(data, 'data');
+        setWeaponsData({
+          rankedResurgence: data.rankedResurgence,
+          alMazrah: data.alMazrah,
+          ashikaIsland: data.ashikaIsland
+        });
+      } catch (error) {
+        console.error("Failed to fetch weapons data:", error);
+      }
+    }
+
+    loadWeapons();
+  }, []);
+
+  // weaponsData will update when the data is fetched
   const selectedWeapons = useMemo(() => {
     switch (selectedCategory) {
       case 'BATTLE ROYALE':
-        return battleRoyale || [];
+        return weaponsData.alMazrah || [];
       case 'RESURGENCE':
-        return resurgence || [];
+        return weaponsData.ashikaIsland || [];
       case 'RANKED':
-        return rankedResurgence || [];
+        return weaponsData.rankedResurgence || [];
       default:
         return [];
     }
-  }, [selectedCategory, battleRoyale, resurgence, rankedResurgence]);
+  }, [selectedCategory, weaponsData]);
 
   const structuredData = {
     "@context": "https://schema.org",

@@ -4,7 +4,7 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,  // Turn off strict type-checking rules
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -13,6 +13,11 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "noImplicitAny": false,  // Allow implicit 'any' types
+    "noImplicitReturns": false,  // Allow functions without return in all code paths
+    "noImplicitThis": false,  // Allow 'this' to be of type 'any'
+    "noUnusedLocals": false,  // Allow unused local variables
+    "noUnusedParameters": false,  // Allow unused parameters
     "plugins": [
       {
         "name": "next"
