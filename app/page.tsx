@@ -11,6 +11,8 @@ import Head from 'next/head';
 import { FAQSection } from '@/components/faq-section';
 import { WeaponTiers } from '@/components/weapon-tiers';
 import { Footer } from '@/components/footer';
+import { Button } from '@/components/ui/button';
+import { WeaponResponse } from '@/types/weapons';
 
 export default function LeaderboardPage() {
   const [selectedCategory, setSelectedCategory] = useState('RANKED');
@@ -67,6 +69,19 @@ export default function LeaderboardPage() {
     "url": "https://wzmeta.io"
   };
 
+    const fetchWeaponData = async () => {
+    try {
+      const response = await fetch('/api/weapons')
+      if (!response.ok) {
+        throw new Error('Failed to fetch weapon data')
+      }
+      const data: WeaponResponse = await response.json()
+      console.log('Fetched weapon data:', data)
+    } catch (error) {
+      console.error('Error fetching weapon data:', error)
+    }
+  }
+
   return (
     <>
       <Head>
@@ -100,6 +115,14 @@ export default function LeaderboardPage() {
           )}
           <FAQSection />
           <Footer />
+          <div className="mt-8 flex justify-center">
+          <Button 
+            onClick={fetchWeaponData}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          >
+            Fetch Weapon Data
+          </Button>
+        </div>
         </motion.div>
       </div>
     </>
